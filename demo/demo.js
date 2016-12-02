@@ -17159,11 +17159,15 @@
 	        var _this = _possibleConstructorReturn(this, (RIEBase.__proto__ || Object.getPrototypeOf(RIEBase)).call(this, props));
 
 	        _this.doValidations = function (value) {
+	            var result = void 0;
 	            if (_this.props.validate) {
-	                _this.setState({ invalid: !_this.props.validate(value) });
+	                result = _this.props.validate(value);
 	            } else if (_this.validate) {
-	                _this.setState({ invalid: !_this.validate(value) });
+	                result = _this.validate(value);
 	            }
+	            _this.setState({ invalid: !result });
+
+	            return result;
 	        };
 
 	        _this.selectInputText = function (element) {
@@ -17229,6 +17233,7 @@
 	    defaultProps: _react2.default.PropTypes.object,
 	    isDisabled: _react2.default.PropTypes.bool,
 	    validate: _react2.default.PropTypes.func,
+	    handleValidationFail: _react2.default.PropTypes.func,
 	    shouldBlockWhileLoading: _react2.default.PropTypes.bool,
 	    classLoading: _react2.default.PropTypes.string,
 	    classEditing: _react2.default.PropTypes.string,
@@ -17284,11 +17289,17 @@
 
 	        _this.finishEditing = function () {
 	            var newValue = _reactDom2.default.findDOMNode(_this.refs.input).value;
-	            _this.doValidations(newValue);
-	            if (!_this.state.invalid && _this.props.value !== newValue) {
+	            var result = _this.doValidations(newValue);
+	            if (result && _this.props.value !== newValue) {
 	                _this.commit(newValue);
 	            }
-	            _this.cancelEditing();
+	            if (!result && _this.props.handleValidationFail) {
+	                _this.props.handleValidationFail(result, newValue, function () {
+	                    return _this.cancelEditing();
+	                });
+	            } else {
+	                _this.cancelEditing();
+	            }
 	        };
 
 	        _this.cancelEditing = function () {
