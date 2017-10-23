@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RIEStatefulBase from './RIEStatefulBase';
@@ -8,9 +9,9 @@ class RIETag extends React.Component {
     }
 
     static propTypes = {
-        text: React.PropTypes.string.isRequired,
-        removeHandler: React.PropTypes.func,
-        className: React.PropTypes.string
+        text: PropTypes.string.isRequired,
+        removeHandler: PropTypes.func,
+        className: PropTypes.string
     };
 
     remove = () => {
@@ -31,13 +32,13 @@ export default class RIETags extends RIEStatefulBase {
     }
 
     static propTyes = {
-        value: React.PropTypes.object.isRequired,
-        maxTags: React.PropTypes.number,
-        minTags: React.PropTypes.number,
-        separator: React.PropTypes.string,
-        elementClass: React.PropTypes.string,
-        blurDelay: React.PropTypes.number,
-        placeholder: React.PropTypes.string
+        value: PropTypes.object.isRequired,
+        maxTags: PropTypes.number,
+        minTags: PropTypes.number,
+        separator: PropTypes.string,
+        elementClass: PropTypes.string,
+        blurDelay: PropTypes.number,
+        placeholder: PropTypes.string
     };
 
     addTag = (tag) => {
