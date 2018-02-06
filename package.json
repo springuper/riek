@@ -1,6 +1,6 @@
 {
   "name": "riek2",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "React Inline Edit Kit",
   "author": "Kai Vik <kvi@ieee.org>",
   "license": "MIT",
@@ -40,6 +40,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
+    "debug": "^2.6.8",
     "prop-types": "^15.6.0"
   }
 }

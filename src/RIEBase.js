@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const debug = require('debug')('RIEBase');
+
 export default class RIEBase extends React.Component {
     constructor(props){
         super(props);
 
         if (!this.props.propName) throw "RTFM: missing 'propName' prop";
         if (!this.props.change) throw "RTFM: missing 'change' prop";
-        if (this.props.value == undefined) throw "RTFM: missing 'value' prop";
+        if (typeof this.props.value == 'undefined') throw "RTFM: missing 'value' prop";
 
         this.state = {
             editing: false,
@@ -32,36 +34,43 @@ export default class RIEBase extends React.Component {
         classEditing: PropTypes.string,
         classDisabled: PropTypes.string,
         classInvalid: PropTypes.string,
-        className: PropTypes.string
+        className: PropTypes.string,
+        beforeStart: PropTypes.func,
+        afterStart: PropTypes.func,
+        beforeFinish: PropTypes.func,
+        afterFinish: PropTypes.func,
     };
 
     doValidations = (value) => {
-        let result;
+        debug(`doValidations(${value})`)
+        let isValid;
         if(this.props.validate) {
-            result = this.props.validate(value);
+            isValid = this.props.validate(value);
         } else if (this.validate) {
-            result = this.validate(value);
-        }
-        this.setState({invalid: !result});
-
-        return result;
+            isValid = this.validate(value);
+        } else return true
+        this.setState({invalid: !isValid});
+        return isValid;
     };
 
     selectInputText = (element) => {
+        debug(`selectInputText(${element.value})`)
         if (element.setSelectionRange) element.setSelectionRange(0, element.value.length);
     };
 
     elementClick = (event) => {
-        throw "RIEBase must be subclassed first: use a concrete class like RIEInput, RIEToggle, RIEDate et.c";
+        throw "RIEBase must be subclassed first: use a concrete class like RIEInput, RIEToggle et.c";
     };
 
     componentWillReceiveProps = (nextProps) => {
+        debug(`componentWillReceiveProps(${nextProps})`)
         if ('value' in nextProps && !(nextProps.shouldRemainWhileInvalid && this.state.invalid)) {
             this.setState({loading: false, editing: false, invalid: false, newValue: null});
         }
     };
 
     commit = (value) => {
+        debug(`commit(${value})`)
         if(!this.state.invalid) {
             let newProp = {};
             newProp[this.props.propName] = value;
@@ -71,6 +80,7 @@ export default class RIEBase extends React.Component {
     };
 
     makeClassString = () => {
+        debug(`makeClassString()`)
         var classNames = [];
         if (this.props.className) classNames.push(this.props.className);
         if (this.state.editing && this.props.classEditing) classNames.push(this.props.classEditing);
@@ -81,6 +91,7 @@ export default class RIEBase extends React.Component {
     };
 
     render = () => {
+        debuf(`render()`)
         return <span {...this.props.defaultProps} tabindex="0" className={this.makeClassString()} onClick={this.elementClick}>{this.props.value}</span>;
     };
 }
